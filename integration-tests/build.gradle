@@ -10,4 +10,5 @@ dependencies {
     testImplementation 'org.testcontainers:kafka'
     testImplementation "org.postgresql:postgresql:${postgresqlVersion}"
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.17'
 }
