@@ -1,0 +1,40 @@
+name: java-aqa-cicd-example
+
+services:
+  selenoid:
+    image: aerokube/selenoid:1.11.3
+    command:
+      - -conf
+      - /etc/selenoid/browsers.json
+      - -container-network
+      - tqa-selenoid
+      - -limit
+      - "4"
+      - -timeout
+      - 2m
+      - -log-output-dir
+      - /opt/selenoid/logs
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./browsers.json:/etc/selenoid/browsers.json:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../../selenoid-logs:/opt/selenoid/logs
+    networks:
+      - selenoid
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:1.10.12
+    command:
+      - --selenoid-uri
+      - http://selenoid:4444
+    depends_on:
+      - selenoid
+    ports:
+      - "8080:8080"
+    networks:
+      - selenoid
+
+networks:
+  selenoid:
+    name: tqa-selenoid
