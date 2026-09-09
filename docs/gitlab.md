@@ -2,9 +2,11 @@
 
 `.gitlab-ci.yml` проверяет код, запускает API-тесты, поднимает Selenoid для UI и собирает HTML-отчёт Allure. Dev запускается после каждого push. UAT доступен вручную только из защищённой ветки.
 
+Между API и UI выполняется `integration_tests`. GitLab Runner через Docker-in-Docker поднимает временные PostgreSQL, Kafka и Vault. `REQUIRE_DOCKER=true` запрещает тихо пропустить эти тесты в CI
+
 ## Runner
 
-UI job использует Docker-in-Docker. Runner должен разрешать privileged containers. На общем Runner без изоляции не подключайте `/var/run/docker.sock`: job получит доступ ко всем контейнерам хоста.
+Integration и UI jobs используют Docker-in-Docker. Runner должен разрешать privileged containers. На общем Runner без изоляции не подключайте `/var/run/docker.sock`: job получит доступ ко всем контейнерам хоста.
 
 Для собственного Runner добавьте в `config.toml`:
 

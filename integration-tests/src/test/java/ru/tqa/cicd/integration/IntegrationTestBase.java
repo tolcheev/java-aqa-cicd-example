@@ -8,8 +8,12 @@ public abstract class IntegrationTestBase {
     @BeforeAll
     static void requireDockerForTestcontainersMode() {
         boolean external = IntegrationEnvironment.mode(System.getenv()) == IntegrationMode.EXTERNAL;
+        boolean dockerAvailable = DockerClientFactory.instance().isDockerAvailable();
+        if (!external && !dockerAvailable && Boolean.parseBoolean(System.getenv("REQUIRE_DOCKER"))) {
+            throw new IllegalStateException("Docker обязателен для интеграционных тестов в CI");
+        }
         Assumptions.assumeTrue(
-            external || DockerClientFactory.instance().isDockerAvailable(),
+            external || dockerAvailable,
             "Для Testcontainers нужен запущенный Docker Engine"
         );
     }

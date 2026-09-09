@@ -66,6 +66,19 @@ pipeline {
             }
         }
 
+        stage('Integration tests') {
+            environment {
+                REQUIRE_DOCKER = 'true'
+            }
+            steps {
+                script {
+                    withTargetEnvironment {
+                        sh './gradlew :integration-tests:test'
+                    }
+                }
+            }
+        }
+
         stage('Start Selenoid') {
             steps {
                 sh 'docker pull selenoid/vnc_chrome:128.0'
@@ -92,6 +105,7 @@ pipeline {
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/build/reports/tests/**, **/build/selenide-reports/**, selenoid-logs/**'
             allure includeProperties: false, jdk: '', results: [
                 [path: 'api-tests/build/allure-results'],
+                [path: 'integration-tests/build/allure-results'],
                 [path: 'ui-tests/build/allure-results']
             ]
         }
