@@ -12,7 +12,15 @@
 cp infra/local-ci/.env.example infra/local-ci/.env
 ```
 
-Замени `GITLAB_ROOT_PASSWORD`, затем запусти GitLab
+Сгенерируй пароль:
+
+```bash
+openssl rand -base64 24
+```
+
+Запиши результат в `GITLAB_ROOT_PASSWORD`. GitLab 19 отклоняет пароли из обычных слов и прерывает первый запуск
+
+После этого запусти GitLab
 
 ```bash
 ./scripts/start-local-gitlab.sh

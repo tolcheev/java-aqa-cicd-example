@@ -8,7 +8,7 @@ services:
       GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD:?Create infra/local-ci/.env from .env.example}
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://localhost:18081'
-        nginx['listen_port'] = 80
+        gitlab_rails['nginx']['listen_port'] = 80
         gitlab_rails['gitlab_shell_ssh_port'] = 18222
     ports:
       - "18081:80"
@@ -20,7 +20,7 @@ services:
       - local-gitlab-logs:/var/log/gitlab
       - local-gitlab-data:/var/opt/gitlab
     healthcheck:
-      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail", "--max-time", "10"]
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost/users/sign_in >/dev/null"]
       interval: 20s
       timeout: 15s
       retries: 60
