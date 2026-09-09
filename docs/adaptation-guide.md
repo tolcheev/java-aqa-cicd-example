@@ -11,7 +11,7 @@ api-tests/src/main/resources/config/dev.properties
 api-tests/src/main/resources/config/uat.properties
 ```
 
-Переменные окружения и system properties имеют приоритет над файлами. Этот вариант подходит для GitLab Variables и Jenkins Credentials. Prod заблокирован, чтобы случайный запуск не создавал данные у реальных пользователей.
+Переменные окружения и system properties имеют приоритет над файлами. Этот вариант подходит для GitLab Variables и Jenkins Credentials. Имя окружения `prod` отклоняется. Подстановку production URL в переменные UAT код не блокирует. Перед переносом проверь, как на целевом стенде подтверждаются и удаляются тестовые пользователи.
 
 В properties оставляйте только адреса, таймауты, названия topic и пути Vault. Пароли и токены храните в Vault или CI credentials.
 

@@ -23,8 +23,8 @@ Label меняется в первой строке блока `agent` в `Jenki
 - `tqa-uat-auth-api-url`
 - `tqa-uat-movies-api-url`
 
-Выберите `uat` в параметре `TEST_ENV`. Pipeline подставит адреса только на время тестовых стадий. Для Dev эти credentials не нужны.
+Выберите `uat` в параметре `TEST_ENV`. Pipeline подставит адреса только на время тестовых стадий. Для Dev эти credentials не нужны. На Prod перед запуском потребуется адаптировать fixtures к подтверждению почты: текущий вход нового пользователя возвращает `403`.
 
 ## Результат
 
-JUnit показывает тесты прямо в build. Allure строится из каталогов трёх модулей. При падении UI остаются HTML-отчёт Gradle, скриншот, page source и лог браузерной сессии.
+`JAVA_TOOL_OPTIONS` в Jenkinsfile включает headless Chrome внутри Selenoid. JUnit показывает тесты прямо в build. Allure строится из каталогов трёх модулей. При падении UI остаются HTML-отчёт Gradle, скриншот, page source и лог браузерной сессии.

@@ -9,7 +9,7 @@
 Создай локальный файл настроек
 
 ```bash
-cp infra/local-ci/.env.example infra/local-ci/.env
+test -f infra/local-ci/.env || cp infra/local-ci/.env.example infra/local-ci/.env
 ```
 
 Сгенерируй пароль:
@@ -58,10 +58,6 @@ Git запросит логин и пароль. Логин — `root`, паро
 Открой `Build` → `Pipelines`. GitLab прочитает `.gitlab-ci.yml` из репозитория и запустит Validate, API, Integration, UI и Allure jobs
 
 Внутри job доступны console log и JUnit. Готовый Allure HTML скачивается из artifacts job `allure_dev`
-
-## Проверка красной сборки
-
-В учебной ветке временно измени ожидаемый результат одного теста и сделай push. Pipeline должен стать красным. Открой упавший job и проверь, что JUnit XML и `allure-results` сохранились в artifacts
 
 ## Остановка
 

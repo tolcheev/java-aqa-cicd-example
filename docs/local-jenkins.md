@@ -13,7 +13,7 @@ Jenkins запускается в Docker с Java 21, Docker CLI, Pipeline, JUnit
 Создай локальный файл настроек
 
 ```bash
-cp infra/local-ci/.env.example infra/local-ci/.env
+test -f infra/local-ci/.env || cp infra/local-ci/.env.example infra/local-ci/.env
 ```
 
 Замени `JENKINS_ADMIN_PASSWORD`. Если работаешь со своим форком, поменяй `JENKINS_REPOSITORY_URL`
@@ -33,10 +33,6 @@ cp infra/local-ci/.env.example infra/local-ci/.env
 5. После завершения открой JUnit и Allure Report
 
 Jenkins читает `Jenkinsfile` из Git. Измени pipeline в репозитории, сделай commit и запусти сборку ещё раз — новая версия файла применится автоматически
-
-## Проверка красной сборки
-
-В отдельной учебной ветке временно замени ожидаемый HTTP-код одного теста. Запушь ветку, переключи branch specifier в настройках job и запусти сборку. Тест должен упасть, pipeline стать красным, а JUnit и Allure остаться доступными
 
 ## Остановка
 

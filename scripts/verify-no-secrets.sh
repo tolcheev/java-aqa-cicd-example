@@ -4,6 +4,12 @@ set -euo pipefail
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_root"
 
+if ! command -v git >/dev/null 2>&1; then
+  echo "git is required to scan repository files" >&2
+  exit 1
+fi
+git rev-parse --is-inside-work-tree >/dev/null
+
 if git ls-files | grep -Eq '(^|/)\.env$'; then
   echo "Нельзя коммитить файлы .env" >&2
   exit 1

@@ -34,6 +34,7 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = "${WORKSPACE}/.gradle"
+        JAVA_TOOL_OPTIONS = '-Dselenide.headless=true'
         // Отдельные порты не пересекаются с Jenkins и Cinescope jobs на общем сервере.
         SELENOID_PORT = '4445'
         SELENOID_UI_PORT = '8091'

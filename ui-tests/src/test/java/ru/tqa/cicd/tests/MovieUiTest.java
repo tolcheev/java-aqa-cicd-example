@@ -42,7 +42,7 @@ class MovieUiTest extends UiTestBase {
     @Test
     void showsReviewCreatedThroughApi() {
         loginPage.open()
-            .loginAs(user.request().email(), user.request().password());
+            .loginAs(user.request().login(), user.request().email(), user.request().password());
 
         mainPage.openMovie(movieId)
             .shouldShowReview(reviewText);

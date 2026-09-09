@@ -42,6 +42,12 @@ subprojects {
 
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
+        // Live services can change independently of the source files and environment.
+        outputs.upToDateWhen { false }
+        outputs.cacheIf { false }
+        doFirst {
+            delete layout.buildDirectory.dir('allure-results')
+        }
         systemProperty 'file.encoding', 'UTF-8'
         reports {
             junitXml.required = true

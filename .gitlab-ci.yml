@@ -18,10 +18,13 @@ default:
 variables:
   GRADLE_USER_HOME: ${CI_PROJECT_DIR}/.gradle
   GRADLE_OPTS: -Dorg.gradle.daemon=false
+  JAVA_TOOL_OPTIONS: -Dselenide.headless=true
 
 validate:
   stage: validate
   script:
+    - apt-get update
+    - apt-get install --yes --no-install-recommends git
     - scripts/verify-no-secrets.sh
     - ./gradlew :api-tests:compileJava :integration-tests:testClasses :ui-tests:testClasses
 
@@ -128,6 +131,7 @@ uat_manual:
   rules:
     - if: '$CI_COMMIT_REF_PROTECTED == "true"'
       when: manual
+      allow_failure: true
     - when: never
 
 allure_dev:

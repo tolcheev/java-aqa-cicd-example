@@ -60,12 +60,14 @@ docker compose --env-file infra/integration/.env \
 ./scripts/verify-integration-compose.sh
 ```
 
-Volume PostgreSQL останется на машине. Удаляй его только когда данные больше не нужны
+Останови сервисы без удаления данных:
 
 ```bash
 docker compose --env-file infra/integration/.env \
-  -f infra/integration/docker-compose.yml down --volumes
+  -f infra/integration/docker-compose.yml down
 ```
+
+Volume PostgreSQL останется на машине. Не добавляй `--volumes`, чтобы сохранить данные.
 
 ## Где лежат настройки
 

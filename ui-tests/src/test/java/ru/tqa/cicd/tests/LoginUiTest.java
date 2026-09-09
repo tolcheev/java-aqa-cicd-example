@@ -13,7 +13,7 @@ class LoginUiTest extends UiTestBase {
     @Test
     void userCreatedByApiCanLogInThroughUi() {
         loginPage.open()
-            .loginAs(user.request().email(), user.request().password());
+            .loginAs(user.request().login(), user.request().email(), user.request().password());
 
         mainPage.shouldShowLoggedInUser();
     }
