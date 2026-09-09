@@ -24,7 +24,7 @@ services:
       - selenoid
 
   selenoid-ui:
-    image: aerokube/selenoid-ui:1.10.12
+    image: aerokube/selenoid-ui:1.10.11
     command:
       - --selenoid-uri
       - http://selenoid:4444
