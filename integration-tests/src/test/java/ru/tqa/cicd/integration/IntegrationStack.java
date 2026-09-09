@@ -1,6 +1,8 @@
 package ru.tqa.cicd.integration;
 
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 import ru.tqa.cicd.config.EnvironmentConfig;
 
 final class IntegrationStack {
@@ -32,12 +34,16 @@ final class IntegrationStack {
             .withUsername("aqa")
             .withPassword(LOCAL_DATABASE_PASSWORD);
         postgres.start();
+        ConfluentKafkaContainer kafka = new ConfluentKafkaContainer(
+            DockerImageName.parse("confluentinc/cp-kafka:7.7.1")
+        );
+        kafka.start();
 
         return new IntegrationConnection(
             postgres.getJdbcUrl(),
             postgres.getUsername(),
             postgres.getPassword(),
-            "",
+            kafka.getBootstrapServers(),
             "",
             ""
         );
