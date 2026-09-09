@@ -1,0 +1,42 @@
+name: java-aqa-local-gitlab
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:19.3.1-ce.0
+    hostname: gitlab.local
+    environment:
+      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD:?Create infra/local-ci/.env from .env.example}
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost:18081'
+        gitlab_rails['gitlab_shell_ssh_port'] = 18222
+    ports:
+      - "18081:80"
+      - "18443:443"
+      - "18222:22"
+    shm_size: 256m
+    volumes:
+      - local-gitlab-config:/etc/gitlab
+      - local-gitlab-logs:/var/log/gitlab
+      - local-gitlab-data:/var/opt/gitlab
+    healthcheck:
+      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail", "--max-time", "10"]
+      interval: 20s
+      timeout: 15s
+      retries: 60
+      start_period: 2m
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine-v19.3.1
+    restart: unless-stopped
+    volumes:
+      - local-gitlab-runner-config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      gitlab:
+        condition: service_healthy
+
+volumes:
+  local-gitlab-config:
+  local-gitlab-logs:
+  local-gitlab-data:
+  local-gitlab-runner-config:
