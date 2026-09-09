@@ -6,4 +6,4 @@ pluginManagement {
 }
 
 rootProject.name = 'java-aqa-cicd-example'
-include 'api-tests', 'ui-tests'
+include 'api-tests', 'ui-tests', 'integration-tests'

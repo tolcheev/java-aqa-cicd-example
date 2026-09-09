@@ -1,0 +1,13 @@
+dependencies {
+    testImplementation project(':api-tests')
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
+    testImplementation platform("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:kafka'
+    testImplementation "org.postgresql:postgresql:${postgresqlVersion}"
+    testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
+}
