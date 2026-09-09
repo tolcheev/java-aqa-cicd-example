@@ -6,6 +6,8 @@ import io.restassured.specification.RequestSpecification;
 import ru.tqa.cicd.config.EnvironmentConfig;
 import ru.tqa.cicd.dto.MovieListResponse;
 import ru.tqa.cicd.dto.MovieResponse;
+import ru.tqa.cicd.dto.ReviewRequest;
+import ru.tqa.cicd.dto.ReviewResponse;
 
 import static io.restassured.RestAssured.given;
 
@@ -45,5 +47,43 @@ public final class MoviesApiClient {
             .spec(specification)
             .when()
             .get("/movies/{id}", movieId);
+    }
+
+    @Step("Создать отзыв через API")
+    public ReviewResponse createReview(int movieId, ReviewRequest request, String accessToken) {
+        return given()
+            .spec(specification)
+            .header("Authorization", "Bearer " + accessToken)
+            .body(request)
+            .when()
+            .post("/movies/{id}/reviews", movieId)
+            .then()
+            .statusCode(201)
+            .extract()
+            .as(ReviewResponse.class);
+    }
+
+    @Step("Удалить отзыв через API")
+    public void deleteReview(int movieId, String accessToken) {
+        given()
+            .spec(specification)
+            .header("Authorization", "Bearer " + accessToken)
+            .when()
+            .delete("/movies/{id}/reviews", movieId)
+            .then()
+            .statusCode(200);
+    }
+
+    public void deleteReviewIfExists(int movieId, String accessToken) {
+        Response response = given()
+            .spec(specification)
+            .header("Authorization", "Bearer " + accessToken)
+            .when()
+            .delete("/movies/{id}/reviews", movieId);
+        if (response.statusCode() != 200 && response.statusCode() != 404) {
+            throw new IllegalStateException(
+                "Не удалось удалить тестовый отзыв, HTTP " + response.statusCode()
+            );
+        }
     }
 }
