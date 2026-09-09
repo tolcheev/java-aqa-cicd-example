@@ -86,6 +86,9 @@ integration_tests:
     - scripts/wait-for-selenoid.sh
     - ./gradlew :ui-tests:test
   after_script:
+    - mkdir -p selenoid-logs
+    - docker compose -f infra/selenoid/docker-compose.yml cp selenoid:/opt/selenoid/logs/. selenoid-logs/ || true
+    - docker compose -f infra/selenoid/docker-compose.yml logs > selenoid-logs/services.log || true
     - docker compose -f infra/selenoid/docker-compose.yml down || true
   artifacts:
     when: always

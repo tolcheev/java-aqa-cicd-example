@@ -1,0 +1,6 @@
+configuration-as-code
+git
+job-dsl
+junit
+workflow-aggregator
+allure-jenkins-plugin

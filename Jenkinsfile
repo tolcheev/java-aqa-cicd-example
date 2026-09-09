@@ -100,6 +100,9 @@ pipeline {
 
     post {
         always {
+            sh 'mkdir -p selenoid-logs'
+            sh 'docker compose -f infra/selenoid/docker-compose.yml cp selenoid:/opt/selenoid/logs/. selenoid-logs/ || true'
+            sh 'docker compose -f infra/selenoid/docker-compose.yml logs > selenoid-logs/services.log || true'
             sh 'docker compose -f infra/selenoid/docker-compose.yml down || true'
             junit allowEmptyResults: true, testResults: '**/build/test-results/test/TEST-*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: '**/build/reports/tests/**, **/build/selenide-reports/**, selenoid-logs/**'

@@ -1,0 +1,41 @@
+jenkins:
+  systemMessage: "Локальная учебная CI-лаба Java AQA"
+  numExecutors: 1
+  mode: NORMAL
+  labelString: "tqa-docker-java-21"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+jobs:
+  - script: >
+      pipelineJob('java-aqa-cicd-example') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url(System.getenv('JENKINS_REPOSITORY_URL')) }
+                branch('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(true)
+          }
+        }
+      }
+
+tool:
+  allure:
+    installations:
+      - name: "allure"
+        properties:
+          - installSource:
+              installers:
+                - allureCommandlineInstaller:
+                    id: "2.30.0"
