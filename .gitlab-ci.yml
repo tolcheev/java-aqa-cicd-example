@@ -1,0 +1,123 @@
+stages:
+  - validate
+  - api_tests
+  - ui_tests
+  - allure
+
+default:
+  image: eclipse-temurin:21-jdk
+  cache:
+    key: gradle-${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle/caches
+      - .gradle/wrapper
+  before_script:
+    - chmod +x gradlew scripts/*.sh
+
+variables:
+  GRADLE_USER_HOME: ${CI_PROJECT_DIR}/.gradle
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+validate:
+  stage: validate
+  script:
+    - scripts/verify-no-secrets.sh
+    - ./gradlew :api-tests:compileJava :ui-tests:testClasses
+
+api_tests_dev:
+  stage: api_tests
+  variables:
+    TEST_ENV: dev
+  script:
+    - ./gradlew :api-tests:test
+  artifacts:
+    when: always
+    expire_in: 14 days
+    reports:
+      junit: api-tests/build/test-results/test/TEST-*.xml
+    paths:
+      - api-tests/build/allure-results/
+      - api-tests/build/reports/tests/
+
+.ui_tests:
+  stage: ui_tests
+  image: docker:27.5.1-cli
+  services:
+    - name: docker:27.5.1-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    SELENOID_URL: http://docker:4444/wd/hub
+    SELENOID_STATUS_URL: http://docker:4444/status
+  before_script:
+    - apk add --no-cache bash curl openjdk21-jdk
+    - chmod +x gradlew scripts/*.sh
+    - docker info
+  script:
+    # Версия образа должна совпадать с infra/selenoid/browsers.json.
+    - docker pull selenoid/vnc_chrome:128.0
+    - docker compose -f infra/selenoid/docker-compose.yml up -d
+    - scripts/wait-for-selenoid.sh
+    - ./gradlew :ui-tests:test
+  after_script:
+    - docker compose -f infra/selenoid/docker-compose.yml down || true
+  artifacts:
+    when: always
+    expire_in: 14 days
+    reports:
+      junit: ui-tests/build/test-results/test/TEST-*.xml
+    paths:
+      - ui-tests/build/allure-results/
+      - ui-tests/build/reports/tests/
+      - ui-tests/build/selenide-reports/
+      - selenoid-logs/
+
+ui_tests_dev:
+  extends: .ui_tests
+  variables:
+    TEST_ENV: dev
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    SELENOID_URL: http://docker:4444/wd/hub
+    SELENOID_STATUS_URL: http://docker:4444/status
+  needs:
+    - api_tests_dev
+
+uat_manual:
+  extends: .ui_tests
+  script:
+    - docker pull selenoid/vnc_chrome:128.0
+    - docker compose -f infra/selenoid/docker-compose.yml up -d
+    - scripts/wait-for-selenoid.sh
+    - ./gradlew :api-tests:test :ui-tests:test
+  variables:
+    TEST_ENV: uat
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    SELENOID_URL: http://docker:4444/wd/hub
+    SELENOID_STATUS_URL: http://docker:4444/status
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: manual
+    - when: never
+
+allure_dev:
+  stage: allure
+  image: node:22.20-alpine
+  needs:
+    - job: api_tests_dev
+      artifacts: true
+    - job: ui_tests_dev
+      artifacts: true
+  before_script: []
+  script:
+    - apk add --no-cache openjdk21-jre
+    - npm install --global allure-commandline@2.30.0
+    - mkdir -p build/allure-results
+    - find api-tests/build/allure-results ui-tests/build/allure-results -type f -exec cp {} build/allure-results/ \;
+    - allure generate build/allure-results --output build/allure-report --clean
+  artifacts:
+    expire_in: 14 days
+    paths:
+      - build/allure-report/
