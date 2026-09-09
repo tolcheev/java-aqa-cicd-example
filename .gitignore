@@ -1,0 +1,10 @@
+.gradle/
+**/build/
+.idea/
+*.iml
+.env
+allure-report/
+selenoid-logs/
+downloads/
+*.log
+.DS_Store

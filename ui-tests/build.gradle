@@ -1,0 +1,7 @@
+dependencies {
+    testImplementation project(':api-tests')
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+}

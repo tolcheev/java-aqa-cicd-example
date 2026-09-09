@@ -1,0 +1,62 @@
+plugins {
+    id 'base'
+    id 'io.qameta.allure' version '4.1.0' apply false
+}
+
+ext {
+    junitVersion = '5.13.4'
+    allureVersion = '2.30.0'
+    restAssuredVersion = '6.0.1'
+    selenideVersion = '7.18.1'
+    jacksonVersion = '2.20.0'
+    assertjVersion = '3.27.6'
+    lombokVersion = '1.18.42'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.qameta.allure'
+
+    group = 'ru.tqa.cicd'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 21
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        systemProperty 'file.encoding', 'UTF-8'
+        reports {
+            junitXml.required = true
+            html.required = true
+        }
+        testLogging {
+            events 'passed', 'skipped', 'failed'
+            exceptionFormat = 'short'
+        }
+    }
+
+    allure {
+        version = allureVersion
+        adapter {
+            autoconfigure = true
+            aspectjWeaver = true
+            frameworks {
+                junit5 {
+                    adapterVersion = allureVersion
+                }
+            }
+        }
+    }
+}
