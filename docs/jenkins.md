@@ -4,14 +4,14 @@
 
 ## Agent
 
-Pipeline ищет agent с label `docker-java-21`. На нём нужны:
+Pipeline ищет отдельный agent с label `tqa-docker-java-21`. На нём нужны:
 
 - JDK 21
 - Docker Engine и Docker Compose v2
 - доступ пользователя Jenkins к Docker
 - плагины JUnit и Allure
 
-Label меняется в первой строке блока `agent` в `Jenkinsfile`.
+Label меняется в первой строке блока `agent` в `Jenkinsfile`. Для T-QA зарезервированы порты 4445 и 8091, поэтому job не занимает стандартный порт Jenkins 8080 и Selenoid 4444.
 
 ## UAT
 

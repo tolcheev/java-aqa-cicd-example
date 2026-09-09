@@ -16,7 +16,7 @@ import java.util.UUID;
 class MovieUiTest extends UiTestBase {
     private final MoviesApiClient movies = new MoviesApiClient(environment);
     private final LoginPage loginPage = new LoginPage(environment);
-    private final MainPage mainPage = new MainPage();
+    private final MainPage mainPage = new MainPage(environment);
     private int movieId;
     private String reviewText;
 
@@ -34,7 +34,9 @@ class MovieUiTest extends UiTestBase {
 
     @AfterEach
     void removeReviewThroughApi() {
-        movies.deleteReviewIfExists(movieId, user.login().accessToken());
+        if (movieId > 0 && user != null) {
+            movies.deleteReviewIfExists(movieId, user.login().accessToken());
+        }
     }
 
     @Test
@@ -42,7 +44,7 @@ class MovieUiTest extends UiTestBase {
         loginPage.open()
             .loginAs(user.request().email(), user.request().password());
 
-        mainPage.openMovie(movieId, environment)
+        mainPage.openMovie(movieId)
             .shouldShowReview(reviewText);
     }
 }

@@ -5,3 +5,8 @@ dependencies {
     testImplementation "com.codeborne:selenide:${selenideVersion}"
     testImplementation "org.assertj:assertj-core:${assertjVersion}"
 }
+
+tasks.named('check') {
+    // Обычный check компилирует UI-suite. Браузер запускается только явной задачей :ui-tests:test.
+    setDependsOn([tasks.named('testClasses')])
+}

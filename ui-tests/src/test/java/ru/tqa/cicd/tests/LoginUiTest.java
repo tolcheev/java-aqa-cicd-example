@@ -8,7 +8,7 @@ import ru.tqa.cicd.pages.MainPage;
 @Tag("ui")
 class LoginUiTest extends UiTestBase {
     private final LoginPage loginPage = new LoginPage(environment);
-    private final MainPage mainPage = new MainPage();
+    private final MainPage mainPage = new MainPage(environment);
 
     @Test
     void userCreatedByApiCanLogInThroughUi() {

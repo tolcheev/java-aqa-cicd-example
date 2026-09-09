@@ -2,16 +2,11 @@ def withTargetEnvironment(Closure body) {
     if (params.TEST_ENV == 'uat') {
         // Эти ID создаются в Jenkins Credentials. Значения в репозиторий не попадают.
         withCredentials([
-            string(credentialsId: 'tqa-uat-web-url', variable: 'UAT_WEB'),
-            string(credentialsId: 'tqa-uat-auth-api-url', variable: 'UAT_AUTH'),
-            string(credentialsId: 'tqa-uat-movies-api-url', variable: 'UAT_MOVIES')
+            string(credentialsId: 'tqa-uat-web-url', variable: 'UAT_WEB_URL'),
+            string(credentialsId: 'tqa-uat-auth-api-url', variable: 'UAT_AUTH_API_URL'),
+            string(credentialsId: 'tqa-uat-movies-api-url', variable: 'UAT_MOVIES_API_URL')
         ]) {
-            withEnv([
-                'TEST_ENV=uat',
-                "UAT_WEB_URL=${UAT_WEB}",
-                "UAT_AUTH_API_URL=${UAT_AUTH}",
-                "UAT_MOVIES_API_URL=${UAT_MOVIES}"
-            ]) {
+            withEnv(['TEST_ENV=uat']) {
                 body()
             }
         }
@@ -24,7 +19,7 @@ def withTargetEnvironment(Closure body) {
 }
 
 pipeline {
-    agent { label 'docker-java-21' }
+    agent { label 'tqa-docker-java-21' }
 
     options {
         timeout(time: 45, unit: 'MINUTES')
@@ -39,8 +34,11 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = "${WORKSPACE}/.gradle"
-        SELENOID_URL = 'http://localhost:4444/wd/hub'
-        SELENOID_STATUS_URL = 'http://localhost:4444/status'
+        // Отдельные порты не пересекаются с Jenkins и Cinescope jobs на общем сервере.
+        SELENOID_PORT = '4445'
+        SELENOID_UI_PORT = '8091'
+        SELENOID_URL = 'http://localhost:4445/wd/hub'
+        SELENOID_STATUS_URL = 'http://localhost:4445/status'
     }
 
     stages {

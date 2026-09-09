@@ -22,21 +22,26 @@ class ReviewApiClientTest {
     void createsAndDeletesReviewForApiFixture() {
         RegisterUserRequest user = TestUserFactory.uniqueUser();
         UserResponse createdUser = auth.register(user);
-        LoginResponse login = auth.login(new LoginRequest(user.email(), user.password()));
-        MovieResponse movie = movies.getMovies(1, 1).movies().getFirst();
-        ReviewRequest review = new ReviewRequest("Отзыв создан через REST fixture", 5);
+        LoginResponse login = null;
+        int movieId = 0;
 
         try {
+            login = auth.login(new LoginRequest(user.email(), user.password()));
+            MovieResponse movie = movies.getMovies(1, 1).movies().getFirst();
+            movieId = movie.id();
+            ReviewRequest review = new ReviewRequest("Отзыв создан через REST fixture", 5);
             ReviewResponse createdReview = movies.createReview(
-                movie.id(), review, login.accessToken()
+                movieId, review, login.accessToken()
             );
 
             assertThat(createdReview.userId()).isEqualTo(createdUser.id());
             assertThat(createdReview.text()).isEqualTo(review.text());
 
-            movies.deleteReview(movie.id(), login.accessToken());
+            movies.deleteReview(movieId, login.accessToken());
         } finally {
-            movies.deleteReviewIfExists(movie.id(), login.accessToken());
+            if (login != null && movieId > 0) {
+                movies.deleteReviewIfExists(movieId, login.accessToken());
+            }
             auth.deleteUserIfPossible(createdUser.id(), user);
         }
     }
