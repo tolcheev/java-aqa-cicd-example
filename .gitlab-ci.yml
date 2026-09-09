@@ -23,7 +23,7 @@ validate:
   stage: validate
   script:
     - scripts/verify-no-secrets.sh
-    - ./gradlew :api-tests:compileJava :ui-tests:testClasses
+    - ./gradlew :api-tests:compileJava :integration-tests:testClasses :ui-tests:testClasses
 
 api_tests_dev:
   stage: api_tests
@@ -133,6 +133,7 @@ uat_manual:
 allure_dev:
   stage: allure
   image: node:22.20-alpine
+  when: always
   needs:
     - job: api_tests_dev
       artifacts: true
@@ -144,6 +145,7 @@ allure_dev:
   script:
     - apk add --no-cache openjdk21-jre
     - npm install --global allure-commandline@2.30.0
+    - mkdir -p api-tests/build/allure-results ui-tests/build/allure-results integration-tests/build/allure-results
     - mkdir -p build/allure-results
     - find api-tests/build/allure-results ui-tests/build/allure-results integration-tests/build/allure-results -type f -exec cp {} build/allure-results/ \;
     - allure generate build/allure-results --output build/allure-report --clean

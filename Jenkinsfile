@@ -37,8 +37,9 @@ pipeline {
         // Отдельные порты не пересекаются с Jenkins и Cinescope jobs на общем сервере.
         SELENOID_PORT = '4445'
         SELENOID_UI_PORT = '8091'
-        SELENOID_URL = 'http://localhost:4445/wd/hub'
-        SELENOID_STATUS_URL = 'http://localhost:4445/status'
+        SELENOID_HOST = "${env.SELENOID_HOST_OVERRIDE ?: 'localhost'}"
+        SELENOID_URL = "http://${SELENOID_HOST}:4445/wd/hub"
+        SELENOID_STATUS_URL = "http://${SELENOID_HOST}:4445/status"
     }
 
     stages {

@@ -31,7 +31,10 @@ cp infra/integration/.env.example infra/integration/.env
 
 ```bash
 docker compose --env-file infra/integration/.env \
-  -f infra/integration/docker-compose.yml up -d --wait
+  -f infra/integration/docker-compose.yml up -d --wait postgres kafka vault
+
+docker compose --env-file infra/integration/.env \
+  -f infra/integration/docker-compose.yml run --rm vault-init
 ```
 
 Проверь подключения

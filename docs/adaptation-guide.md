@@ -4,15 +4,16 @@
 
 ## 1. Адреса стендов
 
-Dev задан в `EnvironmentConfig`. Замените три константы:
+Dev и UAT заданы в OWNER properties:
 
 ```java
-DEV_WEB_URL
-DEV_AUTH_API_URL
-DEV_MOVIES_API_URL
+api-tests/src/main/resources/config/dev.properties
+api-tests/src/main/resources/config/uat.properties
 ```
 
-UAT получает адреса из переменных. Этот вариант подходит для GitLab Variables и Jenkins Credentials. Prod в учебном проекте заблокирован, чтобы случайный запуск не создавал данные у реальных пользователей.
+Переменные окружения и system properties имеют приоритет над файлами. Этот вариант подходит для GitLab Variables и Jenkins Credentials. Prod заблокирован, чтобы случайный запуск не создавал данные у реальных пользователей.
+
+В properties оставляйте только адреса, таймауты, названия topic и пути Vault. Пароли и токены храните в Vault или CI credentials.
 
 ## 2. DTO и builders
 
@@ -69,7 +70,15 @@ curl --fail http://localhost:4444/status
 
 На общем сервере задайте лимит сессий по памяти agent. Одна Chrome-сессия обычно требует сотни мегабайт.
 
-## 7. GitLab CI
+## 7. PostgreSQL, Kafka и Vault
+
+Начните с `integration-tests` и замените учебные `TestOrder` и `TestEvent` своими DTO. JDBC-запросы вынесите в отдельный repository, а Kafka producer/consumer — в client.
+
+Для асинхронной проверки используйте Awaitility. Не добавляйте фиксированный `Thread.sleep`: событие может прийти быстрее или медленнее указанной паузы.
+
+Путь секрета выбирается OWNER-конфигурацией, например `secret/data/java-aqa/dev`. В CI передавайте `VAULT_ADDR` и способ аутентификации, а не прикладной пароль. Для рабочего Vault замените dev-token на AppRole, JWT/OIDC или Kubernetes Auth.
+
+## 8. GitLab CI
 
 Скопируйте `.gitlab-ci.yml`, затем проверьте:
 
@@ -80,7 +89,7 @@ curl --fail http://localhost:4444/status
 
 Подробная настройка: [GitLab CI](gitlab.md).
 
-## 8. Jenkins
+## 9. Jenkins
 
 Скопируйте `Jenkinsfile`. Замените label `tqa-docker-java-21` на label своего agent. Создайте credentials с ID, указанными в pipeline, либо переименуйте ID в коде. Проверьте, что `SELENOID_PORT` и `SELENOID_UI_PORT` свободны на этом agent.
 
@@ -96,7 +105,7 @@ docker compose version
 
 Подробная настройка: [Jenkins](jenkins.md).
 
-## 9. Проверка перед push
+## 10. Проверка перед push
 
 ```bash
 ./gradlew clean check

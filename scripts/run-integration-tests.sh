@@ -20,7 +20,8 @@ set -a
 source "$env_file"
 set +a
 
-docker compose --env-file "$env_file" -f "$compose_file" up -d --wait
+docker compose --env-file "$env_file" -f "$compose_file" up -d --wait postgres kafka vault
+docker compose --env-file "$env_file" -f "$compose_file" run --rm vault-init
 
 USE_EXTERNAL_INFRA=true \
 DATABASE_JDBC_URL="jdbc:postgresql://localhost:15432/aqa" \

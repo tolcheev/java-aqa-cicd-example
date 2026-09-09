@@ -11,12 +11,15 @@ services:
       JENKINS_ADMIN_ID: ${JENKINS_ADMIN_ID:?Create infra/local-ci/.env from .env.example}
       JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:?Create infra/local-ci/.env from .env.example}
       JENKINS_REPOSITORY_URL: ${JENKINS_REPOSITORY_URL:-https://github.com/tolcheev/java-aqa-cicd-example.git}
+      SELENOID_HOST_OVERRIDE: host.docker.internal
     ports:
       - "18080:8080"
       - "50000:50000"
     volumes:
       - local-jenkins-home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/login"]
       interval: 10s

@@ -48,3 +48,5 @@ docker compose --env-file infra/local-ci/.env \
 Команда сохраняет Jenkins volume. Для полного сброса можно удалить volume отдельно, но вместе с ним исчезнут настройки и история сборок
 
 Контейнер запускается от root только ради доступа к локальному Docker socket. Такой вариант подходит для учебной машины, но не для рабочего Jenkins
+
+`SELENOID_HOST_OVERRIDE=host.docker.internal` нужен потому, что Jenkins работает внутри контейнера, а Selenoid публикуется на Docker host. На обычном Jenkins agent pipeline оставляет `localhost`
