@@ -45,13 +45,19 @@ docker compose --env-file infra/integration/.env \
 
 docker compose --env-file infra/integration/.env \
   -f infra/integration/docker-compose.yml exec kafka \
-  kafka-topics --bootstrap-server localhost:9092 --list
+  kafka-topics --bootstrap-server localhost:29092 --list
 ```
 
 Запусти тесты и автоматически останови сервисы
 
 ```bash
 ./scripts/run-integration-tests.sh
+```
+
+Проверить итоговый Compose-конфиг без запуска контейнеров:
+
+```bash
+./scripts/verify-integration-compose.sh
 ```
 
 Volume PostgreSQL останется на машине. Удаляй его только когда данные больше не нужны

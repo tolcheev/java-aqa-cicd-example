@@ -4,3 +4,4 @@ job-dsl
 junit
 workflow-aggregator
 allure-jenkins-plugin
+timestamper

@@ -26,7 +26,7 @@ docker compose --env-file "$env_file" -f "$compose_file" run --rm vault-init
 USE_EXTERNAL_INFRA=true \
 DATABASE_JDBC_URL="jdbc:postgresql://localhost:15432/aqa" \
 DATABASE_USERNAME="aqa" \
-KAFKA_BOOTSTRAP_SERVERS="localhost:19092" \
-VAULT_ADDR="http://localhost:18200" \
-VAULT_TOKEN="$VAULT_DEV_ROOT_TOKEN_ID" \
-  "$project_root/gradlew" -p "$project_root" :integration-tests:test
+  KAFKA_BOOTSTRAP_SERVERS="localhost:19092" \
+  VAULT_ADDR="http://localhost:18200" \
+  VAULT_TOKEN="$VAULT_DEV_ROOT_TOKEN_ID" \
+  "$project_root/gradlew" -p "$project_root" :integration-tests:test --rerun-tasks
