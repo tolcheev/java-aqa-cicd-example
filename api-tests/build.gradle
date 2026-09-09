@@ -6,6 +6,8 @@ dependencies {
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     api "io.qameta.allure:allure-java-commons:${allureVersion}"
+    api "org.aeonbits.owner:owner:${ownerVersion}"
+    api "net.datafaker:datafaker:${dataFakerVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

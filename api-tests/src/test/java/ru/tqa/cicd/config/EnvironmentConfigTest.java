@@ -17,6 +17,8 @@ class EnvironmentConfigTest {
         assertThat(config.webUrl()).isEqualTo("https://dev-cinescope.t-qa.ru");
         assertThat(config.authApiUrl()).isEqualTo("https://auth.dev-cinescope.t-qa.ru");
         assertThat(config.moviesApiUrl()).isEqualTo("https://api.dev-cinescope.t-qa.ru");
+        assertThat(config.vaultSecretPath()).isEqualTo("secret/data/java-aqa/dev");
+        assertThat(config.testConfig()).isInstanceOf(TestConfig.class);
     }
 
     @Test
@@ -37,11 +39,15 @@ class EnvironmentConfigTest {
                 "UAT_AUTH_API_URL", "https://auth.uat.example.test",
                 "UAT_MOVIES_API_URL", "https://api.uat.example.test"
             ),
-            Map.of("env", "uat")
+            Map.of(
+                "env", "uat",
+                "web.url", "https://property.uat.example.test"
+            )
         );
 
         assertThat(config.environment()).isEqualTo(TestEnvironment.UAT);
-        assertThat(config.webUrl()).isEqualTo("https://uat.example.test");
+        assertThat(config.webUrl()).isEqualTo("https://property.uat.example.test");
+        assertThat(config.vaultSecretPath()).isEqualTo("secret/data/java-aqa/uat");
     }
 
     @Test
