@@ -8,3 +8,4 @@ selenoid-logs/
 downloads/
 *.log
 .DS_Store
+.worktrees/
