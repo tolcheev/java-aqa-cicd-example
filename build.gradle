@@ -10,7 +10,7 @@ ext {
     selenideVersion = '7.18.1'
     jacksonVersion = '2.20.0'
     assertjVersion = '3.27.6'
-    lombokVersion = '1.18.42'
+    lombokVersion = '1.18.48'
     ownerVersion = '1.0.12'
     dataFakerVersion = '2.4.3'
     awaitilityVersion = '4.3.0'
